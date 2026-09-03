@@ -1,7 +1,5 @@
 # TableFlow Model
 
-### Basic scheme
-
 ```mermaid
 ---
 title: Database Model
@@ -9,48 +7,62 @@ config:
     layout: elk
 ---
 erDiagram
-    CLIENT ||--o{ RESERVATION: "placement"
-    CLIENT ||--o{ ORDER : "makes"
+    USERS ||--o{ RESERVATION: "books"
+    USERS ||--o{ ORDER : "places (client)"
     
 
-    WAITER ||--o{ ORDER: "services"
-    ORDER ||--o{ TABLE: "use"
+    USERS ||--o{ ORDER: "services (waiter)"
+    ORDER ||--o{ TABLE_ORDER: "occupies"
+    TABLE ||--o{ TABLE_ORDER: "assigned to"
 
-    RESERVATION ||--|{ TABLE: "books"
+    RESERVATION ||--o{ TABLE_RESERVATION: "reserves (max 3 tables)"
+    RESERVATION ||--o{ ORDER: "originates"
+    TABLE ||--o{ TABLE_RESERVATION: "reserved by"
 
-    ORDER ||--|{ MENU_ORDER: "contains"
-    MENU_ITEMS ||--|{ MENU_ORDER: "included_in"
+    ORDER ||--o{ MENU_ORDER: "contains"
+    MENU_ITEMS ||--o{ MENU_ORDER: "ordered as"
 
-    CLIENT {
+    USERS {
         int id PK
         string name
+        string email
+        string role "CLIENT | WAITER | ADMIN | KITCHENER"
     }
 
     ORDER {
         int id PK
-        int waiter_id FK
-        int client_id FK 
-        int table_id FK "| None"
+        int client_id FK "Null"
+        int waiter_id FK "Null"
+        int reservation_id FK "Null"
+        status order_type "DINE_IN | TAKEAWAY"
         string status "ACTIVE | COOKING | COMPLETED"
+        decimal total_price "intermediate check cost"
         datetime create_at 
     }
 
     TABLE {
         int id PK 
         int capacity
-        bool free
     }
 
-    WAITER {
+    TABLE_ORDER {
         int id PK
-        string name
+        int table_id FK 
+        int order_id FK
     }
 
     RESERVATION {
         int id PK
         int client_id FK
-        int table_id FK
-        datetime reserv_datetime
+        datetime start_time
+        datetime end_time
+        string status "CONFIRMED | SEATED | CANCELLED"
+    }
+
+    TABLE_RESERVATION {
+        int id PK
+        int table_id FK 
+        int reserv_id FK
     }
 
     MENU_ITEMS {
@@ -58,8 +70,7 @@ erDiagram
         string title 
         int price 
         bool is_avaiable
-        string status "UNVAILABLE | None"
-        time cooking_time "None"
+        time cooking_time "Null"
     }
 
     MENU_ORDER {
@@ -67,19 +78,19 @@ erDiagram
         int menu_item_id FK
         int order_id FK
         int quantity
+        int price_at_order "snapshot of menu price"
     }
 ```
 
-### USER_ROLE Model
+---
 
 ```mermaid
 ---
-config:
-    layout: elk
+title: User Role Subsystem
 ---
 erDiagram
-    USERS ||--o{ USER_ROLES : "has"
-    ROLES ||--o{ USER_ROLES : "assigned to"
+    USERS ||--o{ USER_ROLES: "has"
+    ROLES ||--o{ USER_ROLES: "assigned to"
 
     USERS {
         int id PK
@@ -90,7 +101,7 @@ erDiagram
 
     ROLES {
         int id PK
-        string role "CLIENT | WAITER | ADMIN | KITCHENER"
+        string role "CLIENT | WAITER | ADMIN | KITCHENER | GUEST"
     }
 
     USER_ROLES {
