@@ -42,3 +42,4 @@ graph TD
 
 - [Model](model.md)
 - [Specification](spec.md)
+- [Comments & Notes](comments.md)
