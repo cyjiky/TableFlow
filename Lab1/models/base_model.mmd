@@ -1,8 +1,3 @@
-# TableFlow Model
-
-### Database Model
-
-```mermaid
 ---
 config:
     layout: elk
@@ -98,35 +93,3 @@ erDiagram
         int quantity
         decimal price_at_order "price snapshot"
     }
-```
-
----
-
-### User Role Subsystem
-
-```mermaid
----
-title: User Role Subsystem
----
-erDiagram
-    USERS ||--o{ USER_ROLES : "has"
-    ROLES ||--o{ USER_ROLES : "assigned to"
-
-    USERS {
-        int id PK
-        string name
-        string phone
-        string password_hash
-    }
-
-    ROLES {
-        int id PK
-        string role "CLIENT | ADMIN | WAITER | CHEF"
-    }
-
-    USER_ROLES {
-        int id PK
-        int user_id FK
-        int role_id FK
-    }
-```
