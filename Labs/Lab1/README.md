@@ -40,6 +40,6 @@ graph TD
 
 ### Посилання
 
-- [Model](model.md)
+- [Model](./models/base_model.mmd)
 - [Specification](spec.md)
-- [Comments & Notes](comments.md)
+- [AI Comments & Notes](comments.md)
