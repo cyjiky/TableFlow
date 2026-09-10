@@ -43,9 +43,9 @@ flowchart LR
     Guest --> UC3
 
     UC1 -.->|"<<extend>> якщо платник — Guest"| UC3
-    UC1 --|> UC_Pay
-    UC2 --|> UC_Pay
-    UC3 --|> UC_Pay
+    UC1 --> UC_Pay
+    UC2 --> UC_Pay
+    UC3 --> UC_Pay
 
     UC1 --> Payment
 
