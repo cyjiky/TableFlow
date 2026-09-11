@@ -1,4 +1,3 @@
-```mermaid 
 ---
 config:
     layout: elk
@@ -6,16 +5,18 @@ config:
 flowchart LR
     Client["Client"]
     Admin["Admin"]
-    Client["Клієнт (CLIENT)"]
-    Admin["Адміністратор (ADMIN)"]
+    %% Актори
+    User["Зареєстрований користувач"]
+    Client["Клієнт"]
+    Admin["Адміністратор"]
+    NotifyService["Notification Service"]
     NotifyService["Notification Service (Push / SMS)"]
 
+    %% Узагальнення акторів
+    Client --> User
+    Admin --> User
+
     subgraph System ["Управління посадкою та бронюванням"]
-      UC1(["Создавать бронь"])
-      UC2(["Просматривать статусы и количество свободных столов в текущем времени"])
-      UC3(["Отменить / перенести бронь"])
-      UC4(["Уведомление об успешном бронировании"])
-      UC5(["Напоминание о бронировании"])
       UC1(["Забронювати стіл (до 3 столів)"])
       UC2(["Контролювати інтерактивну карту залу"])
       UC3(["Скасувати або перенести бронювання"])
@@ -26,6 +27,7 @@ flowchart LR
       UC8(["Надіслати нагадування про візит"])
     end
 
+    %% Зв'язки акторів з прецедентами
     Client --> UC1
     Client --> UC3
 
@@ -36,6 +38,7 @@ flowchart LR
 
     UC1 -.->|<<include>>| UC4
     UC1 -.->|<<extend>>| UC5
+    %% Include / Extend зв'язки
     UC1 -.->|"<<include>>"| UC5
     UC1 -.->|"<<include>>"| UC6
     UC1 -.->|"<<include>>"| UC7
@@ -49,6 +52,6 @@ flowchart LR
 
     UC8 -.->|"<<extend>>"| UC1
 
+    %% Зовнішні сервіси
     UC7 --> NotifyService
     UC8 --> NotifyService
-```
