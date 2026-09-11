@@ -13,14 +13,14 @@
 - **Notification Service: Push / SMS**: зовнішня система сповіщень та повідомлень
 
 
-## 📂 Структура
+### Структура
 
 ```text                  
-📁 Lab2/
-├── 📁 AI/
+📁 Lab2
+├── 📁 AI
 │   └── 📝 comments.md                   # Аналітичний звіт щодо узгодженості вимог та моделей
-├── 📁 features/                         # Gherkin-сценарії
-├── 📁 models/                           # Use Case Diagrams
+├── 📁 features                          # Gherkin-сценарії
+├── 📁 models                            # Use Case Diagrams
 ├── 📝 requirements.md                   # EARS-вимоги, User Stories та матриця трасування
 ├── 📝 spec.md                           # Специфікація цілей та акторів
 └── 📍 README.md                         # Опис лабораторної роботи
