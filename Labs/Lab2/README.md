@@ -32,7 +32,7 @@
 - [Specification](./spec.md)
 - [Requirements & Traceability Matrix](./requirements.md)
 - [AI Audit & Comments](./AI/comments.md)
-- [Models](./models/)
+- [Models](./models/models.md)
   - [Головна Use Case модель](./models/main_model.mmd)
   - [Управління посадкою та бронюванням](./models/boarding_and_reservation.mmd)
   - [Оформлення та редагування замовлень](./models/orders_operations.mmd)
