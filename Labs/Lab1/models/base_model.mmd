@@ -3,20 +3,17 @@ config:
     layout: elk
 ---
 erDiagram
-    USERS ||--o{ USER_ROLES : "has"
-    ROLES ||--o{ USER_ROLES : "assigned to"
+    USERS }|--o{ ROLES : "has"
 
-    USERS ||--o{ RESERVATION : "books (client)"
-    USERS ||--o{ RESERVATION : "manages (admin)"
-    USERS ||--o{ ORDER : "places (client)"
-    USERS ||--o{ ORDER : "services (waiter)"
+    USERS |o--o{ RESERVATION : "books (client)"
+    USERS |o--o{ RESERVATION : "manages (admin)"
+    USERS |o--o{ ORDER : "places (client)"
+    USERS |o--o{ ORDER : "services (waiter)"
 
-    RESERVATION ||--|{ TABLE_RESERVATION : "reserves (1 to 3 tables)"
-    TABLE ||--o{ TABLE_RESERVATION : "reserved by"
-    RESERVATION ||--o| ORDER : "originates (pre-order)"
+    RESERVATION }o--|{ TABLE : "reserves"
+    RESERVATION |o--o| ORDER : "originates (pre-order)"
 
-    ORDER ||--o{ TABLE_ORDER : "occupies (dine in)"
-    TABLE ||--o{ TABLE_ORDER : "assigned to"
+    ORDER }o--o{ TABLE : "occupies (dine in)"
 
     ORDER ||--|{ MENU_ORDER : "contains (min 1)"
     MENU_ITEM ||--o{ MENU_ORDER : "ordered as"
@@ -31,12 +28,6 @@ erDiagram
     ROLES {
         int id PK
         string role "CLIENT | ADMIN | WAITER | CHEF"
-    }
-
-    USER_ROLES {
-        int id PK
-        int user_id FK
-        int role_id FK
     }
 
     TABLE {
@@ -55,12 +46,6 @@ erDiagram
         string status "CONFIRMED | SEATED | CANCELLED"
     }
 
-    TABLE_RESERVATION {
-        int id PK
-        int table_id FK
-        int reservation_id FK
-    }
-
     ORDER {
         int id PK
         int client_id FK "Null for guest"
@@ -70,12 +55,6 @@ erDiagram
         string status "ACTIVE | COOKING | COMPLETED | CANCELLED"
         decimal total_price "intermediate check cost"
         datetime created_at
-    }
-
-    TABLE_ORDER {
-        int id PK
-        int table_id FK
-        int order_id FK
     }
 
     MENU_ITEM {
