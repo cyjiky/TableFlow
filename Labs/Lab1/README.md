@@ -42,4 +42,5 @@ graph TD
 
 - [Model](./models/base_model.mmd)
 - [Specification](spec.md)
-- [AI Comments & Notes](comments.md)
+- [AI Comments & Notes](./AI/comments.md)
+- [DEFENSE](DEFENSE.md)

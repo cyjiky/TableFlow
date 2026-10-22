@@ -3,7 +3,7 @@ config:
     layout: elk
 ---
 erDiagram
-    USERS }|--o{ ROLES : "has"
+    USERS }o--|{ ROLES : "has"
 
     USERS |o--o{ RESERVATION : "books (client)"
     USERS |o--o{ RESERVATION : "manages (admin)"
