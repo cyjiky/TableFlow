@@ -1,0 +1,57 @@
+---
+config:
+    layout: elk
+---
+flowchart LR
+    Client["Client"]
+    Admin["Admin"]
+    %% Актори
+    User["Зареєстрований користувач"]
+    Client["Клієнт"]
+    Admin["Адміністратор"]
+    NotifyService["Notification Service"]
+    NotifyService["Notification Service (Push / SMS)"]
+
+    %% Узагальнення акторів
+    Client --> User
+    Admin --> User
+
+    subgraph System1 ["Управління посадкою та бронюванням"]
+      UC1_1(["Забронювати стіл (до 3 столів)"])
+      UC1_2(["Контролювати інтерактивну карту залу"])
+      UC1_3(["Скасувати або перенести бронювання"])
+      UC1_4(["Оперативна посадка гостей"])
+      UC1_5(["Перевірити доступність столів"])
+      UC1_6(["Закріпити столи та статус"])
+      UC1_7(["Надіслати підтвердження броні"])
+      UC1_8(["Надіслати нагадування про візит"])
+    end
+
+    %% Зв'язки акторів з прецедентами
+    Client --> UC1_1
+    Client --> UC1_3
+
+    Admin --> UC1_1
+    Admin --> UC1_2
+    Admin --> UC1_3
+    Admin --> UC1_4
+
+    UC1_1 -.->|<<include>>| UC4
+    UC1_1 -.->|<<extend>>| UC5
+    %% Include / Extend зв'язки
+    UC1_1 -.->|"<<include>>"| UC1_5
+    UC1_1 -.->|"<<include>>"| UC1_6
+    UC1_1 -.->|"<<include>>"| UC1_7
+
+    UC1_4 --> NotifyService
+    UC1_5 --> NotifyService
+    UC1_4 -.->|"<<include>>"| UC1_5
+    UC1_4 -.->|"<<include>>"| UC1_6
+
+    UC1_3 -.->|"<<include>>"| UC1_5
+
+    UC1_8 -.->|"<<extend>>"| UC1_1
+
+    %% Зовнішні сервіси
+    UC1_7 --> NotifyService
+    UC1_8 --> NotifyService

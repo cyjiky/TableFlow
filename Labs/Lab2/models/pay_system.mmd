@@ -1,0 +1,56 @@
+---
+config:
+    layout: elk
+---
+flowchart LR
+    %% Актори
+    User["Зареєстрований користувач"]
+    Client["Клієнт"]
+    Waiter["Офіціант"]
+    Guest["Гість"]
+    Admin["Admin"]
+    Payment["Payment: Apple Pay / Google Pay"]
+    Waiter["Офіціант (WAITER)"]
+
+    %% Узагальнення акторів
+    Client --> User
+    Waiter --> User
+
+    subgraph System ["Підсистема оплати"]
+      UC3_1(["Оплата онлайн в застосунку"])
+      UC3_2(["Розрахунок y залі (готівка / термінал)"])
+      UC3_3(["Оплата 'з собою' готівкою за кодом"])
+      UC3_4(["Застосувати подарунковий сертифікат"])
+      UC3_5(["Зберігати електронні чеки"])
+      %% UC3_6(["Верифікувати цифровий код видачі"])
+      UC3__Pay(["Оплатити замовлення"])
+    end
+
+    %% Зв'язки акторів з прецедентами
+    Client --> UC1
+    Client --> UC4
+    Client --> UC5
+    Client --> UC2
+
+    Waiter --> UC2
+
+    Admin --> UC2
+
+    Guest --> UC1
+    Guest --> UC4
+    Guest --> UC3
+
+    UC1 -.->|"<<extend>> якщо платник — Guest"| UC3
+    %% Узагальнення способів оплати
+    UC1 --> UC_Pay
+    UC2 --> UC_Pay
+    UC3 --> UC_Pay
+
+    %% Взаємодія із зовнішньою платіжною системою
+    UC1 --> Payment
+
+    %% Include / Extend зв'язки
+    UC1 -.->|"<<include>>"| UC5
+    UC3 -.->|"<<include>>"| UC6
+
+    UC4 -.->|"<<extend>>"| UC_Pay
