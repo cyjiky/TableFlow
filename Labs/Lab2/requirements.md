@@ -12,7 +12,7 @@
   - [2.2. Поза обсягом](#22-поза-обсягом)
 - [3. Gherkin](#3-gherkin)
 - [4. Use Case](#4-use-case)
-- [5. Матриця трасування (Traceability Matrix)](#5-матриця-трасування-traceability-matrix)
+- [5. Матриця трасування](#5-матриця-трасування)
 - [6. Нефункціональні вимоги (NFR)](#6-нефункціональні-вимоги-nfr)
   - [6.1. Клієнт або Гість](#61-клієнт-або-гість)
   - [6.2. Офіціант](#62-офіціант)
@@ -131,37 +131,37 @@
 - [Комунікація між залом та кухнею](./models/communication.mmd)
 
 
-## 5. Матриця трасування (Traceability Matrix)
+## 5. Матриця трасування
 
-| Вимоги | Короткий зміст вимоги | User Story | Сценарій Gherkin | Use Case | Актори |
+| Вимоги | Короткий зміст вимоги | User Story | Use Case | Сценарій Gherkin | Актори |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| REQ1 | Перевірка доступності столів на дату/час | US1.1 | [Автоматичний вибір вільного столу системою при бронюванні](./features/boarding_and_reservation.feature), [Ручний вибір конкретного столу клієнтом](./features/boarding_and_reservation.feature) | UC | Client, Admin |
-| REQ2 | Пропозиція альтернативних столів/часу за відсутності місць | US1.1 | [Відсутність вільних столів у залі на обраний час](./features/boarding_and_reservation.feature) | UC | Client, Admin |
-| REQ3 | Блокування бронювання понад 3 столів на одну бронь | US1.1 | [Відхилення бронювання при перевищенні ліміту в 3 столи](./features/boarding_and_reservation.feature) | UC | Client, Admin |
-| REQ4 | Підтвердження бронювання та статус "Заброньовано" | US1.1 | [Автоматичний вибір вільного столу системою при бронюванні](./features/boarding_and_reservation.feature), [Ручний вибір конкретного столу клієнтом](./features/boarding_and_reservation.feature) | UC | Client, Admin, Notification Service |
-| REQ5 | Зняття резерву зі столів та змiна статусiв | US | [Скасування бронювання клієнтом](./features/boarding_and_reservation.feature) | UC | Client, Admin |
-| REQ6 | Відображення карти залу зі статусами столів | US | [Посадка гостей за живою чергою адміністратором](./features/boarding_and_reservation.feature) | UC | Admin |
-| REQ7 | Посадка живої черги | US1.2 | [Посадка гостей за живою чергою адміністратором](./features/boarding_and_reservation.feature) | UC | Admin |
-| REQ8 | Завчасне нагадування про бронювання | US1.4 | нема | UC | Notification Service, Client |
-| REQ9 | Створення нового замовлення пiсля підтвердження | US2.1, US2.6 | [Самостійне замовлення клієнтом у залі з підрахунком проміжної ціни](./features/orders_operations.feature), [Оформлення та підтвердження замовлення офіціантом біля столу](./features/orders_operations.feature) | UC | Client, Waiter |
-| REQ10 | Оформлення попереднього замовлення страв | US | [Оформлення попереднього замовлення страв клієнтом до заброньованого часу](./features/orders_operations.feature) | UC | Client |
-| REQ11 | Замовлення з собою та код видачі  | US2.5 | [Швидке оформлення замовлення "З собою" неавторизованим гостем](./features/orders_operations.feature) | UC | Guest |
-| REQ12 | Перерахунок проміжної вартості чека | US2.2 | [Самостійне замовлення клієнтом у залі з підрахунком проміжної ціни](./features/orders_operations.feature) | UC | Cleint |
-| REQ13 | Редагування замовлення | US2.3 | [Редагування складу активного замовлення клієнтом до передачі на кухню](./features/orders_operations.feature) | UC | Client, Waiter |
-| REQ14 | Заборона редагування замовлення | US2.3 | [Заборона редагування замовлення після передачі кухарю](./features/orders_operations.feature) | UC | Client, Waiter |
-| REQ15 | Блокування страв | US4.3 | [Блокування замовлення страви після внесення її до стоп-листа](./features/communication.feature) | UC | Client, Waiter, Chef |
-| REQ16 | Відображення переліку доступних способів оплати | US3.1, US3.3, US3.4 | [Онлайн-оплата замовлення через Apple Pay](./features/pay_system.feature), [Оплата замовлення "з собою" готівкою за цифровим кодом у закладі](./features/pay_system.feature), [Оплата замовлення подарунковим сертифікатом із доплатою залишку](./features/pay_system.feature) | UC | Client, Waiter, Guest |
-| REQ17 | Проведення онлайн-оплати та генерація чека | US3.1 US3.5 | [Онлайн-оплата замовлення через Apple Pay](./features/pay_system.feature), [Оплата замовлення подарунковим сертифікатом із доплатою залишку](./features/pay_system.feature) | UC | Client, Guest, Payment |
-| REQ18 | Обробка помилки/відхилення онлайн-платежу | US3.1, US3.5 | [Обробка збою транзакції платіжним шлюзом при онлайн-оплаті](./features/pay_system.feature) | UC | Client, Guest, Payment |
-| REQ19 | Розрахунок офіціантом у залі та переведення столу у "Вільний" | US3.2 | [Оплата замовлення офіціанту готівкою або через термінал](./features/pay_system.feature) | UC | Client, Waiter |
-| REQ20 | Цифровий код замовлення "з собою" та оплата | US3.3 US3.4 | [Оплата замовлення "з собою" готівкою за цифровим кодом у закладі](./features/pay_system.feature), [Оплата замовлення подарунковим сертифікатом із доплатою залишку](./features/pay_system.feature) | UC | Guest, Payment |
-| REQ21 | Оплата подарунковим сертифікатом та доплата залишку | US3.4 | --- | UC | Guest, Client |
-| REQ22 | Передача замовлення на кухню в чергу | US4.1 | [Відображення нового замовлення з особливими побажаннями на кухні](./features/communication.feature) | UC | Client, Guest, Chef, Waiter |
-| REQ23 | Відображення черги замовлень із сортуванням | --- | --- | UC | Chef, Waiter, Guest |
-| REQ24 | Сповіщення про готовність | US4.4 | [Сповіщення про готовність замовленої страви](./features/communication.feature) | UC | Chef, Waiter, Guest |
-| REQ25 | Додавання страви до стоп-листа | US4.3 | [Блокування замовлення страви після внесення її до стоп-листа](./features/communication.feature) | UC | Chef |
-| REQ26 | Сповіщення про скасування/зміну замовлення | US4.2 | [Сповіщення кухаря про термінове скасування замовлення](./features/communication.feature) | UC | Chef, Client, Waiter |
-| REQ27 | Перегляд статистики | US4.5 | нема | UC | Chef, Client |
+| REQ1 | Перевірка доступності столів на дату/час | US1.1 | UC1_5 | [Автоматичний вибір вільного столу](./features/boarding_and_reservation.feature) | Client, Admin |
+| REQ2 | Пропозиція альтернативних столів/часу за відсутності місць | US1.1 | UC1_5 | [Відсутність вільних столів у залі](./features/boarding_and_reservation.feature) | Client, Admin |
+| REQ3 | Блокування бронювання понад 3 столів на одну бронь | US1.1 | UC1_1 | [Відхилення бронювання при перевищенні ліміту](./features/boarding_and_reservation.feature) | Client, Admin |
+| REQ4 | Підтвердження бронювання та статус "Заброньовано" | US1.1 | UC1_6, UC1_7 | [Ручний вибір конкретного столу](./features/boarding_and_reservation.feature) | Client, Admin, Notification Service |
+| REQ5 | Зняття резерву зі столів та зміна статусів при скасуванні | US1.3 | UC1_3 | [Скасування бронювання клієнтом](./features/boarding_and_reservation.feature) | Client, Admin |
+| REQ6 | Відображення карти залу зі статусами столів | US1.2 | UC1_2 | [Посадка гостей за живою чергою](./features/boarding_and_reservation.feature) | Admin |
+| REQ7 | Посадка гостей за живою чергою | US1.2 | UC1_4 | [Посадка гостей за живою чергою](./features/boarding_and_reservation.feature) | Admin |
+| REQ8 | Завчасне нагадування про бронювання | US1.4 | UC1_8 | [Завчасне нагадування про бронювання](./features/boarding_and_reservation.feature) | Client, Notification Service |
+| REQ9 | Створення нового замовлення після підтвердження | US2.1, US2.6 | UC2_1, UC2_6 | [Самостійне замовлення в залі](./features/orders_operations.feature) | Client, Waiter |
+| REQ10 | Оформлення попереднього замовлення страв (Pre-order) | US2.4 | UC2_4 | [Оформлення попереднього замовлення страв](./features/orders_operations.feature) | Client |
+| REQ11 | Замовлення з собою та генерація коду видачі | US2.5 | UC2_5, UC2_7 | [Швидке оформлення замовлення "З собою"](./features/orders_operations.feature) | Guest |
+| REQ12 | Перерахунок проміжної вартості чека в реальному часі | US2.2 | UC2_2 | [Самостійне замовлення з підрахунком вартості](./features/orders_operations.feature) | Client |
+| REQ13 | Редагування складу активного замовлення | US2.3 | UC2_3 | [Редагування складу активного замовлення](./features/orders_operations.feature) | Client, Waiter |
+| REQ14 | Блокування редагування замовлення після передачі кухарю | US2.3 | UC2_3 | [Заборона редагування замовлення](./features/orders_operations.feature) | Client, Waiter |
+| REQ15 | Блокування додавання до замовлення страв зі стоп-листа | US4.3 | UC4_4 | [Блокування замовлення страви зі стоп-листа](./features/communication.feature) | Client, Waiter, Chef |
+| REQ16 | Відображення переліку доступних способів оплати | US3.1, US3.2, US3.3 | UC3_Pay | [Онлайн-оплата замовлення через Apple Pay](./features/pay_system.feature) | Client, Waiter, Guest |
+| REQ17 | Проведення онлайн-оплати та генерація чека | US3.1, US3.5 | UC3_1, UC3_5 | [Онлайн-оплата замовлення через Apple Pay](./features/pay_system.feature) | Client, Guest, Payment |
+| REQ18 | Обробка збою транзакції платіжним шлюзом | US3.1 | UC3_1 | [Обробка збою транзакції платіжним шлюзом](./features/pay_system.feature) | Client, Guest, Payment |
+| REQ19 | Розрахунок офіціантом у залі та переведення столу у "Вільний" | US3.2 | UC3_2 | [Оплата замовлення офіціанту готівкою або через термінал](./features/pay_system.feature) | Client, Waiter |
+| REQ20 | Верифікація цифрового коду замовлення "з собою" та оплата | US3.3 | UC3_3, UC3_6 | [Оплата замовлення "з собою" готівкою за кодом](./features/pay_system.feature) | Guest, Payment |
+| REQ21 | Оплата подарунковим сертифікатом та доплата залишку | US3.4 | UC3_4 | [Оплата замовлення подарунковим сертифікатом із доплатою](./features/pay_system.feature) | Client, Guest |
+| REQ22 | Передача підтвердженого замовлення на кухню в чергу | US4.1 | UC4_1 | [Відображення нового замовлення на кухні](./features/communication.feature) | Client, Waiter, Chef |
+| REQ23 | Відображення черги замовлень на дисплеї KDS із сортуванням | US4.1 | UC4_2 | [Відображення нового замовлення на кухні](./features/communication.feature) | Chef |
+| REQ24 | Сповіщення персоналу або клієнта про статус "Готово" | US4.4 | UC4_5, UC4_6 | [Сповіщення про готовність замовленої страви](./features/communication.feature) | Chef, Waiter, Notification Service |
+| REQ25 | Внесення страви до стоп-листа кухні | US4.3 | UC4_4 | [Блокування замовлення страви зі стоп-листа](./features/communication.feature) | Chef |
+| REQ26 | Сповіщення кухаря про зміну або скасування замовлення | US4.2 | UC4_3 | [Сповіщення кухаря про термінове скасування](./features/communication.feature) | Chef, Client, Waiter |
+| REQ27 | Формування та перегляд денної статистики продуктивності кухні | US4.5 | UC4_7 | [Перегляд денної статистики продуктивності кухні](./features/communication.feature) | Chef, Admin |
 
 
 ## 6. Нефункціональні вимоги (NFR)
