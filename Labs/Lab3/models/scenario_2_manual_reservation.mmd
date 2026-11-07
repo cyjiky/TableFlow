@@ -1,0 +1,72 @@
+sequenceDiagram
+    actor User as Client / Admin
+    participant ClientApp as ClientApp
+    participant ReservationService as ReservationService
+    participant RESERVATION as RESERVATION
+    participant TABLE as TABLE
+    participant NotificationService as NotificationService
+
+    User->>ClientApp: getAvailableTables(date, time, guests_count)
+    activate ClientApp
+    ClientApp->>ReservationService: getAvailableTables(date, time, guests_count)
+    activate ReservationService
+
+    ReservationService->>RESERVATION: getReservedTableIds(start_time, end_time)
+    activate RESERVATION
+    RESERVATION-->>ReservationService: reserved_table_ids
+    deactivate RESERVATION
+
+    ReservationService->>TABLE: getFreeTables(reserved_table_ids)
+    activate TABLE
+    TABLE-->>ReservationService: freeTables (table_id=5, status="FREE")
+    deactivate TABLE
+
+    ReservationService-->>ClientApp: freeTables (table_id=5, status="FREE")
+    deactivate ReservationService
+    ClientApp-->>User: Відображення списку доступних столів (стіл №5 "Вільний")
+    deactivate ClientApp
+
+    User->>ClientApp: submitManualReservation(date, time, guests_count, table_ids=[5])
+    activate ClientApp
+    ClientApp->>ReservationService: createManualReservation(client_id, admin_id, start_time, end_time, guests_count, table_ids=[5])
+    activate ReservationService
+
+    ReservationService->>ReservationService: validateTableLimit(table_ids=[5])
+
+    ReservationService->>RESERVATION: checkTableTimeSlot(table_id=5, start_time, end_time)
+    activate RESERVATION
+    RESERVATION-->>ReservationService: timeSlotAvailable
+    deactivate RESERVATION
+
+    ReservationService->>TABLE: checkTableStatus(table_id=5)
+    activate TABLE
+    TABLE-->>ReservationService: tableStatus (status="FREE")
+    deactivate TABLE
+
+    alt Стіл №5 вільний на обраний часовий інтервал і має статус FREE
+        ReservationService->>RESERVATION: saveReservation(client_id, admin_id, start_time, end_time, table_ids=[5], status="CONFIRMED")
+        activate RESERVATION
+        RESERVATION-->>ReservationService: reserv_id
+        deactivate RESERVATION
+
+        loop Для кожного обраного столу з table_ids (від 1 до 3 столів)
+            ReservationService->>TABLE: updateTableStatus(table_id=5, status="RESERVED")
+            activate TABLE
+            TABLE-->>ReservationService: statusUpdated
+            deactivate TABLE
+        end
+
+        ReservationService->>NotificationService: sendConfirmation(client_id, reserv_details)
+        activate NotificationService
+        NotificationService-->>User: Push / SMS підтвердження з деталями візиту
+        NotificationService-->>ReservationService: confirmationSent
+        deactivate NotificationService
+
+        ReservationService-->>ClientApp: reservationConfirmed(reserv_details)
+    else Стіл №5 був паралельно зайнятий або заброньований іншим користувачем
+        ReservationService-->>ClientApp: tableConflictError(table_id=5)
+    end
+
+    deactivate ReservationService
+    ClientApp-->>User: Відображення результату (підтвердження броні столу №5 або помилка конфлікту)
+    deactivate ClientApp

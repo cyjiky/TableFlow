@@ -1,0 +1,64 @@
+sequenceDiagram
+    actor User as Client / Admin
+    participant ClientApp as ClientApp
+    participant ReservationService as ReservationService
+    participant RESERVATION as RESERVATION
+    participant TABLE as TABLE
+    participant NotificationService as NotificationService
+
+    User->>ClientApp: cancelOrRescheduleReservation(reserv_id, action, new_start_time, new_end_time)
+    activate ClientApp
+
+    ClientApp->>ReservationService: processBookingChange(client_id, admin_id, reserv_id, action, new_start_time, new_end_time)
+    activate ReservationService
+
+    ReservationService->>RESERVATION: getReservationById(reserv_id)
+    activate RESERVATION
+    RESERVATION-->>ReservationService: reservationData(client_id, table_ids=[5], status="CONFIRMED")
+    deactivate RESERVATION
+
+    alt Користувач скасовує бронювання до початку візиту (action == "CANCEL")
+        ReservationService->>RESERVATION: updateReservationStatus(reserv_id, status="CANCELLED")
+        activate RESERVATION
+        RESERVATION-->>ReservationService: statusUpdated
+        deactivate RESERVATION
+
+        loop Для кожного закріпленого столу з table_ids
+            ReservationService->>TABLE: updateTableStatus(table_id=5, status="FREE")
+            activate TABLE
+            TABLE-->>ReservationService: statusUpdated
+            deactivate TABLE
+        end
+
+        ReservationService->>NotificationService: sendCancellationNotice(client_id, reserv_id)
+        activate NotificationService
+        NotificationService-->>User: Повідомлення клієнту про скасування бронювання
+        NotificationService-->>ReservationService: noticeSent
+        deactivate NotificationService
+
+        ReservationService-->>ClientApp: reservationCancelled(reserv_id, table_id=5)
+    else Користувач переносить бронювання на інший час (action == "RESCHEDULE")
+        ReservationService->>RESERVATION: updateReservationSchedule(reserv_id, new_start_time, new_end_time, status="RESCHEDULED")
+        activate RESERVATION
+        RESERVATION-->>ReservationService: scheduleUpdated
+        deactivate RESERVATION
+
+        loop Для кожного закріпленого столу з попереднього слоту table_ids
+            ReservationService->>TABLE: updateTableStatus(table_id=5, status="FREE")
+            activate TABLE
+            TABLE-->>ReservationService: statusUpdated
+            deactivate TABLE
+        end
+
+        ReservationService->>NotificationService: sendRescheduleNotice(client_id, reserv_details)
+        activate NotificationService
+        NotificationService-->>User: Повідомлення клієнту про зміну бронювання
+        NotificationService-->>ReservationService: noticeSent
+        deactivate NotificationService
+
+        ReservationService-->>ClientApp: reservationRescheduled(reserv_details)
+    end
+
+    deactivate ReservationService
+    ClientApp-->>User: Відображення оновленого статусу бронювання та столу №5 ("Вільний")
+    deactivate ClientApp

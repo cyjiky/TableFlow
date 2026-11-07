@@ -1,0 +1,56 @@
+sequenceDiagram
+    actor Admin as Admin
+    participant ClientApp as ClientApp
+    participant ReservationService as ReservationService
+    participant RESERVATION as RESERVATION
+    participant TABLE as TABLE
+
+    Admin->>ClientApp: getHallMapStatus()
+    activate ClientApp
+    ClientApp->>ReservationService: getHallMapStatus()
+    activate ReservationService
+
+    ReservationService->>TABLE: getAllTablesStatus()
+    activate TABLE
+    TABLE-->>ReservationService: tablesStatus
+    deactivate TABLE
+
+    ReservationService->>RESERVATION: getCurrentReservations(current_time)
+    activate RESERVATION
+    RESERVATION-->>ReservationService: activeReservations
+    deactivate RESERVATION
+
+    ReservationService-->>ClientApp: hallMapData (table_id=8, status="FREE")
+    deactivate ReservationService
+    ClientApp-->>Admin: Відображення карти залу (стіл №8 "Вільний")
+    deactivate ClientApp
+
+    Admin->>ClientApp: seatWalkInGuests(admin_id, table_id=8)
+    activate ClientApp
+    ClientApp->>ReservationService: occupyTableForWalkIn(admin_id, table_id=8, current_time)
+    activate ReservationService
+
+    ReservationService->>RESERVATION: checkImmediateOverlap(table_id=8, current_time)
+    activate RESERVATION
+    RESERVATION-->>ReservationService: overlapStatus
+    deactivate RESERVATION
+
+    ReservationService->>TABLE: checkTableStatus(table_id=8)
+    activate TABLE
+    TABLE-->>ReservationService: tableStatus (status="FREE")
+    deactivate TABLE
+
+    alt Стіл №8 має статус FREE і не заброньований на поточний час
+        ReservationService->>TABLE: updateTableStatus(table_id=8, status="OCCUPIED")
+        activate TABLE
+        TABLE-->>ReservationService: statusUpdated(table_id=8, status="OCCUPIED")
+        deactivate TABLE
+
+        ReservationService-->>ClientApp: tableOccupied(table_id=8, status="OCCUPIED")
+    else Стіл №8 вже зайнятий або заброньований
+        ReservationService-->>ClientApp: tableNotAvailableError(table_id=8)
+    end
+
+    deactivate ReservationService
+    ClientApp-->>Admin: Оновлення статусу столу №8 ("Зайнятий") на інтерактивній карті залу
+    deactivate ClientApp
