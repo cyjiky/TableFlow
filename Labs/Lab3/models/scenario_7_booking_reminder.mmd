@@ -1,0 +1,35 @@
+sequenceDiagram
+    actor Client as Client
+    participant ClientApp as ClientApp
+    participant ReservationService as ReservationService
+    participant RESERVATION as RESERVATION
+    participant TABLE as TABLE
+    participant NotificationService as NotificationService
+
+    ReservationService->>ReservationService: triggerByTimer(current_time, reminder_interval)
+    activate ReservationService
+
+    ReservationService->>RESERVATION: checkUpcomingReservations(current_time, reminder_interval)
+    activate RESERVATION
+    RESERVATION-->>ReservationService: upcomingReservations (client_id, table_ids, status="CONFIRMED" | "RESCHEDULED")
+    deactivate RESERVATION
+
+    opt Список upcomingReservations не порожній
+        loop Для кожного активного бронювання з upcomingReservations
+            ReservationService->>TABLE: getReservedTablesInfo(table_ids)
+            activate TABLE
+            TABLE-->>ReservationService: reservedTablesInfo (status="RESERVED")
+            deactivate TABLE
+
+            ReservationService->>NotificationService: sendReminder(client_id, reserv_details)
+            activate NotificationService
+            NotificationService->>ClientApp: Push / SMS нагадування з деталями броні
+            activate ClientApp
+            ClientApp-->>Client: Відображення нагадування про запланований візит
+            deactivate ClientApp
+            NotificationService-->>ReservationService: reminderSent
+            deactivate NotificationService
+        end
+    end
+
+    deactivate ReservationService

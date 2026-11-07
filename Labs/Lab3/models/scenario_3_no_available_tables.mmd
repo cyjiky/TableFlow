@@ -1,0 +1,44 @@
+sequenceDiagram
+    actor Actor as Client / Admin
+    participant ClientApp as ClientApp
+    participant ReservationService as ReservationService
+    participant RESERVATION as RESERVATION
+    participant TABLE as TABLE
+
+    Actor->>ClientApp: checkAndBook(date, time, guests_count)
+    activate ClientApp
+
+    ClientApp->>ReservationService: checkAvailabilityForBooking(client_id, admin_id, start_time, end_time, guests_count)
+    activate ReservationService
+
+    ReservationService->>RESERVATION: getReservedTableIds(start_time, end_time)
+    activate RESERVATION
+    RESERVATION-->>ReservationService: reserved_table_ids
+    deactivate RESERVATION
+
+    ReservationService->>TABLE: findAvailableTables(guests_count, reserved_table_ids)
+    activate TABLE
+    TABLE-->>ReservationService: emptyList (усі столи OCCUPIED або RESERVED)
+    deactivate TABLE
+
+    opt Вільні столи на обраний інтервал відсутні (availableTables == emptyList)
+        ReservationService->>RESERVATION: findAlternativeTimeSlots(date, guests_count)
+        activate RESERVATION
+        RESERVATION-->>ReservationService: alternativeTimeSlots
+        deactivate RESERVATION
+
+        ReservationService->>TABLE: findAlternativeTables(guests_count)
+        activate TABLE
+        TABLE-->>ReservationService: alternativeTables
+        deactivate TABLE
+
+        alt Знайдено альтернативні доступні столи або інший час візиту
+            ReservationService-->>ClientApp: noTablesAvailable(alternativeOptions)
+        else На обрану дату вільних місць і слотів немає
+            ReservationService-->>ClientApp: noSlotsOnDate
+        end
+    end
+
+    deactivate ReservationService
+    ClientApp-->>Actor: Повідомлення про відсутність місць та пропозиція альтернативних столів або часу
+    deactivate ClientApp
