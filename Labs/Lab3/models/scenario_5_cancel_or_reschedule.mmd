@@ -1,12 +1,12 @@
 sequenceDiagram
-    actor Actor as Client / Admin
+    actor User as Client / Admin
     participant ClientApp as ClientApp
     participant ReservationService as ReservationService
     participant RESERVATION as RESERVATION
     participant TABLE as TABLE
     participant NotificationService as NotificationService
 
-    Actor->>ClientApp: cancelOrRescheduleReservation(reserv_id, action, new_start_time, new_end_time)
+    User->>ClientApp: cancelOrRescheduleReservation(reserv_id, action, new_start_time, new_end_time)
     activate ClientApp
 
     ClientApp->>ReservationService: processBookingChange(client_id, admin_id, reserv_id, action, new_start_time, new_end_time)
@@ -32,7 +32,7 @@ sequenceDiagram
 
         ReservationService->>NotificationService: sendCancellationNotice(client_id, reserv_id)
         activate NotificationService
-        NotificationService-->>Actor: Повідомлення клієнту про скасування бронювання
+        NotificationService-->>User: Повідомлення клієнту про скасування бронювання
         NotificationService-->>ReservationService: noticeSent
         deactivate NotificationService
 
@@ -52,7 +52,7 @@ sequenceDiagram
 
         ReservationService->>NotificationService: sendRescheduleNotice(client_id, reserv_details)
         activate NotificationService
-        NotificationService-->>Actor: Повідомлення клієнту про зміну бронювання
+        NotificationService-->>User: Повідомлення клієнту про зміну бронювання
         NotificationService-->>ReservationService: noticeSent
         deactivate NotificationService
 
@@ -60,5 +60,5 @@ sequenceDiagram
     end
 
     deactivate ReservationService
-    ClientApp-->>Actor: Відображення оновленого статусу бронювання та столу №5 ("Вільний")
+    ClientApp-->>User: Відображення оновленого статусу бронювання та столу №5 ("Вільний")
     deactivate ClientApp

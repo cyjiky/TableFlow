@@ -1,11 +1,11 @@
 sequenceDiagram
-    actor Actor as Client / Admin
+    actor User as Client / Admin
     participant ClientApp as ClientApp
     participant ReservationService as ReservationService
     participant RESERVATION as RESERVATION
     participant TABLE as TABLE
 
-    Actor->>ClientApp: checkAndBook(date, time, guests_count)
+    User->>ClientApp: checkAndBook(date, time, guests_count)
     activate ClientApp
 
     ClientApp->>ReservationService: checkAvailabilityForBooking(client_id, admin_id, start_time, end_time, guests_count)
@@ -40,5 +40,5 @@ sequenceDiagram
     end
 
     deactivate ReservationService
-    ClientApp-->>Actor: Повідомлення про відсутність місць та пропозиція альтернативних столів або часу
+    ClientApp-->>User: Повідомлення про відсутність місць та пропозиція альтернативних столів або часу
     deactivate ClientApp

@@ -1,11 +1,11 @@
 sequenceDiagram
-    actor Actor as Client / Admin
+    actor User as Client / Admin
     participant ClientApp as ClientApp
     participant ReservationService as ReservationService
     participant RESERVATION as RESERVATION
     participant TABLE as TABLE
 
-    Actor->>ClientApp: submitManualReservation(date, time, guests_count, table_ids=[1, 2, 3, 4])
+    User->>ClientApp: submitManualReservation(date, time, guests_count, table_ids=[1, 2, 3, 4])
     activate ClientApp
 
     ClientApp->>ReservationService: createManualReservation(client_id, admin_id, start_time, end_time, guests_count, table_ids=[1, 2, 3, 4])
@@ -30,5 +30,5 @@ sequenceDiagram
     end
 
     deactivate ReservationService
-    ClientApp-->>Actor: Відображення помилки "Максимальна кількість столів для одного бронювання: 3"
+    ClientApp-->>User: Відображення помилки "Максимальна кількість столів для одного бронювання: 3"
     deactivate ClientApp

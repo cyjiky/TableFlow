@@ -1,12 +1,12 @@
 sequenceDiagram
-    actor Actor as Client / Admin
+    actor User as Client / Admin
     participant ClientApp as ClientApp
     participant ReservationService as ReservationService
     participant RESERVATION as RESERVATION
     participant TABLE as TABLE
     participant NotificationService as NotificationService
 
-    Actor->>ClientApp: getAvailableTables(date, time, guests_count)
+    User->>ClientApp: getAvailableTables(date, time, guests_count)
     activate ClientApp
     ClientApp->>ReservationService: getAvailableTables(date, time, guests_count)
     activate ReservationService
@@ -23,10 +23,10 @@ sequenceDiagram
 
     ReservationService-->>ClientApp: freeTables (table_id=5, status="FREE")
     deactivate ReservationService
-    ClientApp-->>Actor: Відображення списку доступних столів (стіл №5 "Вільний")
+    ClientApp-->>User: Відображення списку доступних столів (стіл №5 "Вільний")
     deactivate ClientApp
 
-    Actor->>ClientApp: submitManualReservation(date, time, guests_count, table_ids=[5])
+    User->>ClientApp: submitManualReservation(date, time, guests_count, table_ids=[5])
     activate ClientApp
     ClientApp->>ReservationService: createManualReservation(client_id, admin_id, start_time, end_time, guests_count, table_ids=[5])
     activate ReservationService
@@ -58,7 +58,7 @@ sequenceDiagram
 
         ReservationService->>NotificationService: sendConfirmation(client_id, reserv_details)
         activate NotificationService
-        NotificationService-->>Actor: Push / SMS підтвердження з деталями візиту
+        NotificationService-->>User: Push / SMS підтвердження з деталями візиту
         NotificationService-->>ReservationService: confirmationSent
         deactivate NotificationService
 
@@ -68,5 +68,5 @@ sequenceDiagram
     end
 
     deactivate ReservationService
-    ClientApp-->>Actor: Відображення результату (підтвердження броні столу №5 або помилка конфлікту)
+    ClientApp-->>User: Відображення результату (підтвердження броні столу №5 або помилка конфлікту)
     deactivate ClientApp
